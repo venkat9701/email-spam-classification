@@ -1,3 +1,4 @@
+#importing libraries
 # Numpy Library for Numerical Calculations
 import numpy as np
 
@@ -40,15 +41,25 @@ from sklearn.metrics import accuracy_score
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report
 spam = pd.read_csv('spam.csv',encoding = 'Latin-1')
+#checking null values in data
 spam.isnull().sum()
+#first five values in data
 spam.head()
+#last five values in data
 spam.tail()
+#Taking the required Columns in the Dataset
 spam = spam[['v1', 'v2']]
 spam.columns = ['label', 'message']
 spam.head()
+#Dimensions of the Dataset
 spam.shape
+#Checking for the classes in the Data
 spam.groupby('label').size()
+# Plotting
+Plotting the Label in the Dataset
 spam['label'].value_counts().plot(kind='bar')
+# NLP
+Preprocessing the Text in the Dataset
 ps = PorterStemmer()
 corpus = []
 for i in range(0, len(spam)):
@@ -61,11 +72,16 @@ for i in range(0, len(spam)):
 
 # Printing the first 5 values in the corpus list
 corpus[1:6]
+#creating Bag of Words Model
 cv = CountVectorizer(max_features = 4000)
 X = cv.fit_transform(corpus).toarray()
 Y = pd.get_dummies(spam['label'])
 Y = Y.iloc[:, 1].values
+# Data Modeling
+Splitting the Dataset into Training and Testing Set
 X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size = 0.20, random_state=42)
+# Model Building
+Creating the Models
 # Model 1 - Random Forest Classifier
 model1 = RandomForestClassifier()
 model1.fit(X_train, Y_train)
@@ -77,9 +93,12 @@ model2.fit(X_train, Y_train)
 # Model 3 - Multinomial Naïve Bayes
 model3 = MultinomialNB()
 model3.fit(X_train, Y_train)
+#prediction
 pred1 = model1.predict(X_test)
 pred2 = model2.predict(X_test)
 pred3 = model3.predict(X_test)
+# Model Testing
+Testing the Model
 # Model 1 - Random Forest Classifier
 print("Random Forest Classifier")
 print("Confusion Matrix: ")
@@ -112,6 +131,9 @@ report2 = classification_report(Y_test, pred2)
 print("Classification Report for DTC \n", report2)
 report3 = classification_report(Y_test, pred3)
 print("Classification Report for MNB \n", report3)    
+# Best Model is Multinomial Naïve Bayes
+
+Saving Models
 filename = "RFC.pkl"
 pickle.dump(model1, open(filename, 'wb'))
 filename = "DTC.pkl"
